@@ -1,4 +1,7 @@
 {
+  "globals": {
+    "Event": true
+  },
   "env": {
     "jest": true
   }
