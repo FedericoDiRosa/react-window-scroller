@@ -7,22 +7,60 @@
 ## Install
 
 ```bash
-npm install --save react-window-scroller
+yarn add react-window-scroller
 ```
 
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React from 'react'
+import { FixedSizeList as List } from 'react-window'
+import { ReactWindowScroller } from 'react-window-scroller'
 
-import MyComponent from 'react-window-scroller'
-import 'react-window-scroller/dist/index.css'
+const App = () => (
+  <ReactWindowScroller>
+    {({ ref, style, onScroll }) => (
+      <List
+        ref={ref}
+        style={style}
+        height={window.innerHeight}
+        itemCount={1000}
+        itemSize={100}
+        onScroll={onScroll}
+      >
+        {Row}
+      </List>
+    )}
+  </ReactWindowScroller>
+)
+```
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+Also compatible with Grid component
+
+```jsx
+import React from 'react'
+import { VariableSizeGrid as Grid } from 'react-window'
+import { ReactWindowScroller } from 'react-window-scroller'
+
+const App = () => (
+  <ReactWindowScroller>
+    {({ ref, style, onScroll }) => (
+      <Grid
+        ref={ref}
+        style={style}
+        height={window.innerHeight}
+        width={window.innerWidth}
+        columnCount={1000}
+        columnWidth={(index) => columnWidths[index]}
+        rowCount={1000}
+        rowHeight={(index) => rowHeights[index]}
+        onScroll={onScroll}
+      >
+        {Cell}
+      </Grid>
+    )}
+  </ReactWindowScroller>
+)
 ```
 
 ## License
