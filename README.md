@@ -12,6 +12,8 @@ yarn add react-window-scroller
 
 ## Usage
 
+Check out the examples: https://federicodirosa.github.io/react-window-scroller/
+
 ```jsx
 import React from 'react'
 import { FixedSizeList as List } from 'react-window'
