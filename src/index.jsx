@@ -4,7 +4,7 @@ import throttle from 'lodash.throttle'
 export const ReactWindowScroller = ({
   children,
   throttleTime = 10,
-  isGrid
+  isGrid = false
 }) => {
   const ref = useRef()
 

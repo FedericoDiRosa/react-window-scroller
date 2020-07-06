@@ -12,7 +12,9 @@ yarn add react-window-scroller
 
 ## Usage
 
-Check out the examples: https://federicodirosa.github.io/react-window-scroller/
+**Check out the examples: [https://federicodirosa.github.io/react-window-scroller](https://federicodirosa.github.io/react-window-scroller)**
+
+With a List component:
 
 ```jsx
 import React from 'react'
@@ -37,7 +39,7 @@ const App = () => (
 )
 ```
 
-Also compatible with Grid component
+With a Grid component:
 
 ```jsx
 import React from 'react'
@@ -45,7 +47,7 @@ import { VariableSizeGrid as Grid } from 'react-window'
 import { ReactWindowScroller } from 'react-window-scroller'
 
 const App = () => (
-  <ReactWindowScroller>
+  <ReactWindowScroller isGrid>
     {({ ref, style, onScroll }) => (
       <Grid
         ref={ref}
@@ -64,6 +66,14 @@ const App = () => (
   </ReactWindowScroller>
 )
 ```
+
+## Props
+
+| Prop name        | Type     | Description                                                                                | Default   |
+| ---------------- | -------- | ------------------------------------------------------------------------------------------ | --------- |
+| **children**     | function | Render props function called with 3 props: `ref`, `style` and `onScroll`                   | undefined |
+| **throttleTime** | number   | Timing (ms) for the throttle on window scroll event handler                                | 10        |
+| **isGrid**       | boolean  | Set to true if rendering a react-window Grid component (FixedSizeGrid or VariableSizeGrid) | false     |
 
 ## License
 
