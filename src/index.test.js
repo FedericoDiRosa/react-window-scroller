@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import Enzyme, { shallow, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
+import sinon from 'sinon'
 
 import { ReactWindowScroller } from './index'
 
@@ -12,6 +13,8 @@ jest.mock('react', () => {
     useRef: jest.fn()
   }
 })
+
+const clock = sinon.useFakeTimers()
 
 describe('ReactWindowScroller', () => {
   let children
@@ -36,13 +39,13 @@ describe('ReactWindowScroller', () => {
     })
   })
 
-  it('sets width to auto when isGrid is true', () => {
-    shallow(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
-
-    expect(children.mock.calls[0][0].style.width).toEqual('auto')
-  })
-
   describe('when isGrid is true', () => {
+    it('sets width to auto', () => {
+      shallow(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
+
+      expect(children.mock.calls[0][0].style.width).toEqual('auto')
+    })
+
     it('calls scrollTo on window when scrollTop is different than document scrollTop', () => {
       shallow(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
@@ -83,10 +86,10 @@ describe('ReactWindowScroller', () => {
 
       expect(document.documentElement.scrollLeft).toEqual(0)
       expect(document.documentElement.scrollTop).toEqual(0)
-      expect(window.scrollTo).not.toHaveBeenCalledWith()
+      expect(window.scrollTo).not.toHaveBeenCalled()
     })
 
-    it('does not call scrollTo on window is scrollUpdateWasRequested is false', () => {
+    it('does not call scrollTo on window if scrollUpdateWasRequested is false', () => {
       shallow(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
 
@@ -126,7 +129,7 @@ describe('ReactWindowScroller', () => {
       expect(window.scrollTo).not.toHaveBeenCalled()
     })
 
-    it('does not call scrollTo on window is scrollUpdateWasRequested is false', () => {
+    it('does not call scrollTo on window if scrollUpdateWasRequested is false', () => {
       shallow(<ReactWindowScroller>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
 
@@ -146,7 +149,21 @@ describe('ReactWindowScroller', () => {
       useRef.mockReturnValue({ current: { scrollTo } })
     })
 
-    it.todo('throttles the event handlers')
+    it('throttles the event handler', () => {
+      mount(
+        <ReactWindowScroller isGrid throttleTime={10}>
+          {children}
+        </ReactWindowScroller>
+      )
+
+      window.dispatchEvent(new Event('scroll'))
+      clock.tick(5)
+      window.dispatchEvent(new Event('scroll'))
+      clock.tick(5)
+      window.dispatchEvent(new Event('scroll'))
+
+      expect(scrollTo).toHaveBeenCalledTimes(2)
+    })
 
     it('calls scrollTo on the ref with document scrollLeft and scrollTop if isGrid is true', () => {
       mount(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
