@@ -5,9 +5,10 @@ import { Cell } from './Cell'
 
 const FixedSizeGrid = () => (
   <ReactWindowScroller isGrid>
-    {({ ref, style, onScroll }) => (
+    {({ ref, outerRef, style, onScroll }) => (
       <Grid
         ref={ref}
+        outerRef={outerRef}
         style={style}
         height={window.innerHeight}
         width={window.innerWidth}

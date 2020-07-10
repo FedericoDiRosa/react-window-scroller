@@ -5,9 +5,10 @@ import { Row } from './Row'
 
 const FixedSizeList = () => (
   <ReactWindowScroller>
-    {({ ref, style, onScroll }) => (
+    {({ ref, outerRef, style, onScroll }) => (
       <List
         ref={ref}
+        outerRef={outerRef}
         style={style}
         height={window.innerHeight}
         itemCount={1000}

@@ -17,11 +17,19 @@ jest.mock('react', () => {
 const clock = sinon.useFakeTimers()
 
 describe('ReactWindowScroller', () => {
-  let children
+  const children = jest.fn().mockReturnValue(null)
+  const scrollTo = jest.fn()
 
   beforeEach(() => {
-    children = jest.fn().mockReturnValue(null)
-    useRef.mockReturnValue({ current: 'ref' })
+    useRef.mockReturnValueOnce({ current: { scrollTo } })
+    useRef.mockReturnValueOnce({ current: { offsetTop: 20, offsetLeft: 10 } })
+    document.documentElement.scrollTop = 30
+    document.documentElement.scrollLeft = 20
+  })
+
+  afterEach(() => {
+    children.mockClear()
+    scrollTo.mockClear()
   })
 
   it('calls children with the correct props', () => {
@@ -29,7 +37,8 @@ describe('ReactWindowScroller', () => {
 
     expect(children).toHaveBeenCalledWith({
       onScroll: expect.any(Function),
-      ref: { current: 'ref' },
+      ref: { current: { scrollTo } },
+      outerRef: { current: { offsetTop: 20, offsetLeft: 10 } },
       style: {
         display: 'inline-block',
         height: '100%',
@@ -46,7 +55,7 @@ describe('ReactWindowScroller', () => {
       expect(children.mock.calls[0][0].style.width).toEqual('auto')
     })
 
-    it('calls scrollTo on window when scrollTop is different than document scrollTop', () => {
+    it('calls scrollTo on window when scrollTop is different than calculated scrollTop', () => {
       shallow(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
 
@@ -56,11 +65,11 @@ describe('ReactWindowScroller', () => {
         scrollUpdateWasRequested: true
       })
 
-      expect(document.documentElement.scrollTop).toEqual(0)
-      expect(window.scrollTo).toHaveBeenCalledWith(0, 100)
+      expect(document.documentElement.scrollTop).toEqual(30)
+      expect(window.scrollTo).toHaveBeenCalledWith(10, 120)
     })
 
-    it('calls scrollTo on window when scrollLeft is different than document scrollLeft', () => {
+    it('calls scrollTo on window when scrollLeft is different than calculated scrollLeft', () => {
       shallow(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
 
@@ -70,22 +79,22 @@ describe('ReactWindowScroller', () => {
         scrollUpdateWasRequested: true
       })
 
-      expect(document.documentElement.scrollLeft).toEqual(0)
-      expect(window.scrollTo).toHaveBeenCalledWith(100, 0)
+      expect(document.documentElement.scrollLeft).toEqual(20)
+      expect(window.scrollTo).toHaveBeenCalledWith(110, 20)
     })
 
-    it('does not call scrollTo on window when both scrollTop and scrollLeft are the same as document scrollTop and scrollLeft', () => {
+    it('does not call scrollTo on window when both scrollTop and scrollLeft are the same as calculated scrollTop and scrollLeft', () => {
       shallow(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
 
       children.mock.calls[0][0].onScroll({
-        scrollLeft: 0,
-        scrollTop: 0,
+        scrollLeft: 10,
+        scrollTop: 10,
         scrollUpdateWasRequested: true
       })
 
-      expect(document.documentElement.scrollLeft).toEqual(0)
-      expect(document.documentElement.scrollTop).toEqual(0)
+      expect(document.documentElement.scrollLeft).toEqual(20)
+      expect(document.documentElement.scrollTop).toEqual(30)
       expect(window.scrollTo).not.toHaveBeenCalled()
     })
 
@@ -104,7 +113,7 @@ describe('ReactWindowScroller', () => {
   })
 
   describe('when isGrid is false', () => {
-    it('calls scrollTo on window when scrollOffset is different than document scrollTop', () => {
+    it('calls scrollTo on window when scrollOffset is different than calculated scrollTop', () => {
       shallow(<ReactWindowScroller>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
 
@@ -113,19 +122,19 @@ describe('ReactWindowScroller', () => {
         scrollUpdateWasRequested: true
       })
 
-      expect(window.scrollTo).toHaveBeenCalledWith(0, 100)
+      expect(window.scrollTo).toHaveBeenCalledWith(0, 120)
     })
 
-    it('does not call scrollTo on window when scrollOffset is the same as document scrollTop', () => {
+    it('does not call scrollTo on window when scrollOffset is the same as calculated scrollTop', () => {
       shallow(<ReactWindowScroller>{children}</ReactWindowScroller>)
       window.scrollTo = jest.fn()
 
       children.mock.calls[0][0].onScroll({
-        scrollOffset: 0,
+        scrollOffset: 10,
         scrollUpdateWasRequested: true
       })
 
-      expect(document.documentElement.scrollTop).toEqual(0)
+      expect(document.documentElement.scrollTop).toEqual(30)
       expect(window.scrollTo).not.toHaveBeenCalled()
     })
 
@@ -143,12 +152,6 @@ describe('ReactWindowScroller', () => {
   })
 
   describe('on window scroll', () => {
-    const scrollTo = jest.fn()
-
-    beforeEach(() => {
-      useRef.mockReturnValue({ current: { scrollTo } })
-    })
-
     it('throttles the event handler', () => {
       mount(
         <ReactWindowScroller isGrid throttleTime={10}>
@@ -165,23 +168,23 @@ describe('ReactWindowScroller', () => {
       expect(scrollTo).toHaveBeenCalledTimes(2)
     })
 
-    it('calls scrollTo on the ref with document scrollLeft and scrollTop if isGrid is true', () => {
+    it('calls scrollTo on the ref with calculated scrollLeft and scrollTop positions if isGrid is true', () => {
       mount(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
 
       window.dispatchEvent(new Event('scroll'))
 
-      expect(document.documentElement.scrollLeft).toEqual(0)
-      expect(document.documentElement.scrollTop).toEqual(0)
-      expect(scrollTo).toHaveBeenCalledWith({ scrollLeft: 0, scrollTop: 0 })
+      expect(document.documentElement.scrollLeft).toEqual(20)
+      expect(document.documentElement.scrollTop).toEqual(30)
+      expect(scrollTo).toHaveBeenCalledWith({ scrollLeft: 10, scrollTop: 10 })
     })
 
-    it('calls scrollTo on the ref with document scrollTop if isGrid is false', () => {
+    it('calls scrollTo on the ref with calculated scrollTop position if isGrid is false', () => {
       mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
 
       window.dispatchEvent(new Event('scroll'))
 
-      expect(document.documentElement.scrollTop).toEqual(0)
-      expect(scrollTo).toHaveBeenCalledWith(0)
+      expect(document.documentElement.scrollTop).toEqual(30)
+      expect(scrollTo).toHaveBeenCalledWith(10)
     })
   })
 })

@@ -23,9 +23,10 @@ import { ReactWindowScroller } from 'react-window-scroller'
 
 const App = () => (
   <ReactWindowScroller>
-    {({ ref, style, onScroll }) => (
+    {({ ref, outerRef, style, onScroll }) => (
       <List
         ref={ref}
+        outerRef={outerRef}
         style={style}
         height={window.innerHeight}
         itemCount={1000}
@@ -48,9 +49,10 @@ import { ReactWindowScroller } from 'react-window-scroller'
 
 const App = () => (
   <ReactWindowScroller isGrid>
-    {({ ref, style, onScroll }) => (
+    {({ ref, outerRef, style, onScroll }) => (
       <Grid
         ref={ref}
+        outerRef={outerRef}
         style={style}
         height={window.innerHeight}
         width={window.innerWidth}
@@ -71,7 +73,7 @@ const App = () => (
 
 | Prop name        | Type     | Description                                                                                | Default   |
 | ---------------- | -------- | ------------------------------------------------------------------------------------------ | --------- |
-| **children**     | function | Render props function called with 3 props: `ref`, `style` and `onScroll`                   | undefined |
+| **children**     | function | Render props function called with 4 props: `ref`, `outerRef`, `style` and `onScroll`       | undefined |
 | **throttleTime** | number   | Timing (ms) for the throttle on window scroll event handler                                | 10        |
 | **isGrid**       | boolean  | Set to true if rendering a react-window Grid component (FixedSizeGrid or VariableSizeGrid) | false     |
 

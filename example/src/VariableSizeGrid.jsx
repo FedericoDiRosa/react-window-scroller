@@ -12,9 +12,10 @@ const rowHeights = [...new Array(1000)].map(
 
 const VariableSizeGrid = () => (
   <ReactWindowScroller isGrid>
-    {({ ref, style, onScroll }) => (
+    {({ ref, outerRef, style, onScroll }) => (
       <Grid
         ref={ref}
+        outerRef={outerRef}
         style={style}
         height={window.innerHeight}
         width={window.innerWidth}
