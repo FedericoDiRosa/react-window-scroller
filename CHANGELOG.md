@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.5 (10/07/2020)
+
+#### Bugfix:
+
+- Make change in previous version backward compatible. Missing outerRef will not crash the page
+
+---
+
 ## v1.0.4 (10/07/2020)
 
 #### Enhancements:
