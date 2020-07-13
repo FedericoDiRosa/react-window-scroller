@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.6 (13/07/2020)
+
+#### Bugfix:
+
+- Remove default overflow hidden property
+
+---
+
 ## v1.0.5 (10/07/2020)
 
 #### Bugfix:

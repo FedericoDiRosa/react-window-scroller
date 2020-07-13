@@ -42,7 +42,6 @@ describe('ReactWindowScroller', () => {
       style: {
         display: 'inline-block',
         height: '100%',
-        overflow: 'hidden',
         width: '100%'
       }
     })
