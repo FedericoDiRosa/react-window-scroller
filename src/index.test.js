@@ -186,4 +186,34 @@ describe('ReactWindowScroller', () => {
       expect(scrollTo).toHaveBeenCalledWith(10)
     })
   })
+
+  it('reads scroll position from window page offset when supported', () => {
+    const prevPageYOffset = window.pageYOffset
+    window.pageYOffset = 50
+    mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
+
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(scrollTo).toHaveBeenCalledWith(30)
+    window.pageYOffset = prevPageYOffset
+  })
+
+  it('reads scroll position from document.documentElement when window page offset is not supported', () => {
+    document.documentElement.scrollTop = 40
+    mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
+
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(scrollTo).toHaveBeenCalledWith(20)
+  })
+
+  it('reads scroll position from document.body when document.documentElement and window page offset are not supported', () => {
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 60
+    mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
+
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(scrollTo).toHaveBeenCalledWith(40)
+  })
 })

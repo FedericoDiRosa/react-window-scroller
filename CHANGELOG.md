@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.7 (04/08/2020)
+
+#### Bugfix:
+
+- Read scroll position from window page offset with fallback to document.documentElement and document.body
+
+---
+
 ## v1.0.6 (13/07/2020)
 
 #### Bugfix:

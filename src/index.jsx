@@ -12,8 +12,16 @@ export const ReactWindowScroller = ({
   useEffect(() => {
     const handleWindowScroll = throttle(() => {
       const { offsetTop = 0, offsetLeft = 0 } = outerRef.current || {}
-      const scrollTop = document.documentElement.scrollTop - offsetTop
-      const scrollLeft = document.documentElement.scrollLeft - offsetLeft
+      const scrollTop =
+        (window.pageYOffset ||
+          document.documentElement.scrollTop ||
+          document.body.scrollTop ||
+          0) - offsetTop
+      const scrollLeft =
+        (window.pageXOffset ||
+          document.documentElement.scrollLeft ||
+          document.body.scrollLeft ||
+          0) - offsetLeft
       if (isGrid) ref.current && ref.current.scrollTo({ scrollLeft, scrollTop })
       if (!isGrid) ref.current && ref.current.scrollTo(scrollTop)
     }, throttleTime)
