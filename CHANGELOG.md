@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.8 (04/08/2020)
+
+#### Bugfix:
+
+- Read scroll position from window page offset also from within onScroll callback
+
+---
+
 ## v1.0.7 (04/08/2020)
 
 #### Bugfix:

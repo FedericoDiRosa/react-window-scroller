@@ -1,6 +1,22 @@
 import { useRef, useEffect, useCallback } from 'react'
 import throttle from 'lodash.throttle'
 
+const windowScrollPositionKey = {
+  y: 'pageYOffset',
+  x: 'pageXOffset'
+}
+
+const documentScrollPositionKey = {
+  y: 'scrollTop',
+  x: 'scrollLeft'
+}
+
+const getScrollPosition = (axis) =>
+  window[windowScrollPositionKey[axis]] ||
+  document.documentElement[documentScrollPositionKey[axis]] ||
+  document.body[documentScrollPositionKey[axis]] ||
+  0
+
 export const ReactWindowScroller = ({
   children,
   throttleTime = 10,
@@ -12,16 +28,8 @@ export const ReactWindowScroller = ({
   useEffect(() => {
     const handleWindowScroll = throttle(() => {
       const { offsetTop = 0, offsetLeft = 0 } = outerRef.current || {}
-      const scrollTop =
-        (window.pageYOffset ||
-          document.documentElement.scrollTop ||
-          document.body.scrollTop ||
-          0) - offsetTop
-      const scrollLeft =
-        (window.pageXOffset ||
-          document.documentElement.scrollLeft ||
-          document.body.scrollLeft ||
-          0) - offsetLeft
+      const scrollTop = getScrollPosition('y') - offsetTop
+      const scrollLeft = getScrollPosition('x') - offsetLeft
       if (isGrid) ref.current && ref.current.scrollTo({ scrollLeft, scrollTop })
       if (!isGrid) ref.current && ref.current.scrollTo(scrollTop)
     }, throttleTime)
@@ -33,7 +41,8 @@ export const ReactWindowScroller = ({
   const onScroll = useCallback(
     ({ scrollLeft, scrollTop, scrollOffset, scrollUpdateWasRequested }) => {
       if (!scrollUpdateWasRequested) return
-      const { scrollTop: top, scrollLeft: left } = document.documentElement
+      const top = getScrollPosition('y')
+      const left = getScrollPosition('x')
       const { offsetTop = 0, offsetLeft = 0 } = outerRef.current || {}
 
       scrollOffset += Math.min(top, offsetTop)
