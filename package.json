@@ -1,6 +1,6 @@
 {
   "name": "react-window-scroller",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Window scroller component for react-window",
   "author": "FedericoDiRosa",
   "license": "MIT",
@@ -47,8 +47,7 @@
     "prettier": "^2.0.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "^3.4.1",
-    "sinon": "^9.0.2"
+    "react-scripts": "^3.4.1"
   },
   "files": [
     "dist"

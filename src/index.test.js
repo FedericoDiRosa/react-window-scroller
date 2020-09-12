@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import Enzyme, { shallow, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import sinon from 'sinon'
+import throttle from 'lodash.throttle'
 
 import { ReactWindowScroller } from './index'
 
@@ -13,8 +13,7 @@ jest.mock('react', () => {
     useRef: jest.fn()
   }
 })
-
-const clock = sinon.useFakeTimers()
+jest.mock('lodash.throttle')
 
 describe('ReactWindowScroller', () => {
   const children = jest.fn().mockReturnValue(null)
@@ -30,6 +29,7 @@ describe('ReactWindowScroller', () => {
   afterEach(() => {
     children.mockClear()
     scrollTo.mockClear()
+    throttle.mockClear()
   })
 
   it('calls children with the correct props', () => {
@@ -158,19 +158,14 @@ describe('ReactWindowScroller', () => {
         </ReactWindowScroller>
       )
 
-      window.dispatchEvent(new Event('scroll'))
-      clock.tick(5)
-      window.dispatchEvent(new Event('scroll'))
-      clock.tick(5)
-      window.dispatchEvent(new Event('scroll'))
-
-      expect(scrollTo).toHaveBeenCalledTimes(2)
+      expect(throttle.mock.calls[0][1]).toEqual(10)
     })
 
     it('calls scrollTo on the ref with calculated scrollLeft and scrollTop positions if isGrid is true', () => {
       mount(<ReactWindowScroller isGrid>{children}</ReactWindowScroller>)
 
       window.dispatchEvent(new Event('scroll'))
+      throttle.mock.calls[0][0]()
 
       expect(document.documentElement.scrollLeft).toEqual(20)
       expect(document.documentElement.scrollTop).toEqual(30)
@@ -181,6 +176,7 @@ describe('ReactWindowScroller', () => {
       mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
 
       window.dispatchEvent(new Event('scroll'))
+      throttle.mock.calls[0][0]()
 
       expect(document.documentElement.scrollTop).toEqual(30)
       expect(scrollTo).toHaveBeenCalledWith(10)
@@ -193,6 +189,7 @@ describe('ReactWindowScroller', () => {
     mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
 
     window.dispatchEvent(new Event('scroll'))
+    throttle.mock.calls[0][0]()
 
     expect(scrollTo).toHaveBeenCalledWith(30)
     window.pageYOffset = prevPageYOffset
@@ -203,6 +200,7 @@ describe('ReactWindowScroller', () => {
     mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
 
     window.dispatchEvent(new Event('scroll'))
+    throttle.mock.calls[0][0]()
 
     expect(scrollTo).toHaveBeenCalledWith(20)
   })
@@ -213,7 +211,50 @@ describe('ReactWindowScroller', () => {
     mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
 
     window.dispatchEvent(new Event('scroll'))
+    throttle.mock.calls[0][0]()
 
     expect(scrollTo).toHaveBeenCalledWith(40)
+  })
+
+  it('attaches the event handler to window scroll on mount', () => {
+    const throttledFunc = jest.fn()
+    throttle.mockReturnValue(throttledFunc)
+    window.addEventListener = jest.fn()
+
+    mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
+
+    expect(window.addEventListener).toHaveBeenCalledWith(
+      'scroll',
+      throttledFunc
+    )
+  })
+
+  it('removes the event handler to window scroll on mount', () => {
+    const throttledFunc = () => {}
+    throttledFunc.cancel = jest.fn()
+    throttle.mockReturnValue(throttledFunc)
+    window.removeEventListener = jest.fn()
+
+    const wrapper = mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
+
+    wrapper.unmount()
+
+    expect(window.removeEventListener).toHaveBeenCalledWith(
+      'scroll',
+      throttledFunc
+    )
+  })
+
+  it('calls cancel method on throttled function on unmount', () => {
+    const throttledFunc = () => {}
+    throttledFunc.cancel = jest.fn()
+    throttle.mockReturnValue(throttledFunc)
+    const wrapper = mount(<ReactWindowScroller>{children}</ReactWindowScroller>)
+
+    expect(throttledFunc.cancel).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+
+    expect(throttledFunc.cancel).toHaveBeenCalled()
   })
 })

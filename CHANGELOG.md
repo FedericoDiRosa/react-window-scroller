@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.9 (12/09/2020)
+
+#### Bugfix:
+
+- Cancel throttled function on unmount
+
+---
+
 ## v1.0.8 (04/08/2020)
 
 #### Bugfix:
