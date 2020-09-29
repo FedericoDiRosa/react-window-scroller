@@ -1,6 +1,6 @@
 {
   "name": "react-window-scroller",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Window scroller component for react-window",
   "author": "FedericoDiRosa",
   "license": "MIT",
@@ -53,6 +53,6 @@
     "dist"
   ],
   "dependencies": {
-    "lodash.throttle": "^4.1.1"
+    "lodash": "^4.17.20"
   }
 }

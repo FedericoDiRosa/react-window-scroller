@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback } from 'react'
-import throttle from 'lodash.throttle'
+import throttle from 'lodash/throttle'
 
 const windowScrollPositionKey = {
   y: 'pageYOffset',
