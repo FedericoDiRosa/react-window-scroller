@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import Enzyme, { shallow, mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import throttle from 'lodash.throttle'
+import throttle from 'lodash/throttle'
 
 import { ReactWindowScroller } from './index'
 
@@ -13,7 +13,7 @@ jest.mock('react', () => {
     useRef: jest.fn()
   }
 })
-jest.mock('lodash.throttle')
+jest.mock('lodash/throttle')
 
 describe('ReactWindowScroller', () => {
   const children = jest.fn().mockReturnValue(null)
