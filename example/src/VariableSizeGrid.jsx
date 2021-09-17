@@ -10,8 +10,8 @@ const rowHeights = [...new Array(1000)].map(
   () => 25 + Math.round(Math.random() * 50)
 )
 
-const VariableSizeGrid = () => (
-  <ReactWindowScroller isGrid>
+const VariableSizeGrid = ({ scrollElementRef }) => (
+  <ReactWindowScroller scrollElementRef={scrollElementRef} isGrid>
     {({ ref, outerRef, style, onScroll }) => (
       <Grid
         ref={ref}

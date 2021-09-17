@@ -8,8 +8,8 @@ const rowSizes = [...new Array(1000)].map(
 )
 const getItemSize = (index) => rowSizes[index]
 
-const VariableSizeList = () => (
-  <ReactWindowScroller>
+const VariableSizeList = ({ scrollElementRef }) => (
+  <ReactWindowScroller scrollElementRef={scrollElementRef}>
     {({ ref, outerRef, style, onScroll }) => (
       <List
         ref={ref}

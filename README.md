@@ -71,11 +71,12 @@ const App = () => (
 
 ## Props
 
-| Prop name        | Type     | Description                                                                                | Default   |
-| ---------------- | -------- | ------------------------------------------------------------------------------------------ | --------- |
-| **children**     | function | Render props function called with 4 props: `ref`, `outerRef`, `style` and `onScroll`       | undefined |
-| **throttleTime** | number   | Timing (ms) for the throttle on window scroll event handler                                | 10        |
-| **isGrid**       | boolean  | Set to true if rendering a react-window Grid component (FixedSizeGrid or VariableSizeGrid) | false     |
+| Prop name            | Type       | Description                                                                                | Default   |
+| -------------------- | ---------- | ------------------------------------------------------------------------------------------ | --------- |
+| **children**         | function   | Render props function called with 4 props: `ref`, `outerRef`, `style` and `onScroll`       | undefined |
+| **throttleTime**     | number     | Timing (ms) for the throttle on window scroll event handler                                | 10        |
+| **isGrid**           | boolean    | Set to true if rendering a react-window Grid component (FixedSizeGrid or VariableSizeGrid) | false     |
+| **scrollElementRef** | ElementRef | The element in your project that is scrolling, if not window                               | window    |
 
 ## License
 

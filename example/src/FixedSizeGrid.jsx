@@ -3,8 +3,8 @@ import { FixedSizeGrid as Grid } from 'react-window'
 import { ReactWindowScroller } from 'react-window-scroller'
 import { Cell } from './Cell'
 
-const FixedSizeGrid = () => (
-  <ReactWindowScroller isGrid>
+const FixedSizeGrid = ({ scrollElementRef }) => (
+  <ReactWindowScroller scrollElementRef={scrollElementRef} isGrid>
     {({ ref, outerRef, style, onScroll }) => (
       <Grid
         ref={ref}
