@@ -11,16 +11,29 @@ const documentScrollPositionKey = {
   x: 'scrollLeft'
 }
 
-const getScrollPosition = (axis) =>
+const elementScrollPositionKey = documentScrollPositionKey
+
+const getScrollPositionWindow = (axis) =>
   window[windowScrollPositionKey[axis]] ||
   document.documentElement[documentScrollPositionKey[axis]] ||
   document.body[documentScrollPositionKey[axis]] ||
   0
 
+const getScrollPositionElement = (ref, axis) =>
+  ref[elementScrollPositionKey[axis]]
+
+const getScrollPosition = (ref, axis) => {
+  if (ref === window) {
+    return getScrollPositionWindow(axis)
+  }
+  return getScrollPositionElement(ref, axis)
+}
+
 export const ReactWindowScroller = ({
   children,
   throttleTime = 10,
-  isGrid = false
+  isGrid = false,
+  scrollElementRef = window
 }) => {
   const ref = useRef()
   const outerRef = useRef()
@@ -28,36 +41,43 @@ export const ReactWindowScroller = ({
   useEffect(() => {
     const handleWindowScroll = throttle(() => {
       const { offsetTop = 0, offsetLeft = 0 } = outerRef.current || {}
-      const scrollTop = getScrollPosition('y') - offsetTop
-      const scrollLeft = getScrollPosition('x') - offsetLeft
+
+      const scrollTop = getScrollPosition(scrollElementRef, 'y') - offsetTop
+      const scrollLeft = getScrollPosition(scrollElementRef, 'x') - offsetLeft
       if (isGrid) ref.current && ref.current.scrollTo({ scrollLeft, scrollTop })
       if (!isGrid) ref.current && ref.current.scrollTo(scrollTop)
     }, throttleTime)
 
-    window.addEventListener('scroll', handleWindowScroll)
+    scrollElementRef.addEventListener('scroll', handleWindowScroll)
     return () => {
       handleWindowScroll.cancel()
-      window.removeEventListener('scroll', handleWindowScroll)
+      scrollElementRef.removeEventListener('scroll', handleWindowScroll)
     }
-  }, [isGrid])
+  }, [isGrid, scrollElementRef])
 
   const onScroll = useCallback(
-    ({ scrollLeft, scrollTop, scrollOffset, scrollUpdateWasRequested }) => {
+    ({
+      scrollLeft = 0, // This is not provided by react-window
+      scrollTop = 0, // This is not provided by react-window
+      scrollOffset,
+      scrollUpdateWasRequested
+    }) => {
       if (!scrollUpdateWasRequested) return
-      const top = getScrollPosition('y')
-      const left = getScrollPosition('x')
+      const top = getScrollPosition(scrollElementRef, 'y')
+      const left = getScrollPosition(scrollElementRef, 'x')
       const { offsetTop = 0, offsetLeft = 0 } = outerRef.current || {}
 
       scrollOffset += Math.min(top, offsetTop)
       scrollTop += Math.min(top, offsetTop)
       scrollLeft += Math.min(left, offsetLeft)
 
-      if (!isGrid && scrollOffset !== top) window.scrollTo(0, scrollOffset)
+      if (!isGrid && scrollOffset !== top)
+        scrollElementRef.scrollTo(0, scrollOffset)
       if (isGrid && (scrollTop !== top || scrollLeft !== left)) {
-        window.scrollTo(scrollLeft, scrollTop)
+        scrollElementRef.scrollTo(scrollLeft, scrollTop)
       }
     },
-    [isGrid]
+    [isGrid, scrollElementRef]
   )
 
   return children({
