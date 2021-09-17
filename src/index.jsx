@@ -53,7 +53,7 @@ export const ReactWindowScroller = ({
       handleWindowScroll.cancel()
       scrollElementRef.removeEventListener('scroll', handleWindowScroll)
     }
-  }, [isGrid, scrollElementRef])
+  }, [isGrid, scrollElementRef, throttleTime])
 
   const onScroll = useCallback(
     ({
