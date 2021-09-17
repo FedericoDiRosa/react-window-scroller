@@ -27,3 +27,41 @@ nav {
 nav button {
   margin: 0 5px;
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.top-bar {
+  width: 100%;
+  height: 60px;
+  background-color: blue;
+}
+
+.main-body {
+  display: flex;
+  flex-direction: row;
+}
+
+.main-body__left_bar {
+  width: 300px;
+  background-color: aqua;
+}
+
+.main-body__content {
+  flex: 1 0;
+  height: calc(100vh - 182px);
+  width: 100vw;
+  overflow: auto;
+}
+
+.main-body__content-tabs {
+  position: sticky;
+  top: 0;
+  text-align: center;
+  background-color: greenyellow;
+  height: 40px;
+  line-height: 40px;
+  z-index: 10;
+}

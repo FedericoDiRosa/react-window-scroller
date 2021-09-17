@@ -3,8 +3,8 @@ import { FixedSizeList as List } from 'react-window'
 import { ReactWindowScroller } from 'react-window-scroller'
 import { Row } from './Row'
 
-const FixedSizeList = () => (
-  <ReactWindowScroller>
+const FixedSizeList = ({ scrollElementRef }) => (
+  <ReactWindowScroller scrollElementRef={scrollElementRef}>
     {({ ref, outerRef, style, onScroll }) => (
       <List
         ref={ref}
