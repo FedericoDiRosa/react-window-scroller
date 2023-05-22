@@ -5,9 +5,9 @@
   "author": "FedericoDiRosa",
   "license": "MIT",
   "repository": "FedericoDiRosa/react-window-scroller",
-  "main": "dist/index.jsx.js",
-  "module": "dist/index.modern.jsx.js",
-  "source": "src/index.jsx.js",
+  "main": "dist/index.jsx",
+  "module": "dist/index.jsx.modern",
+  "source": "src/index.jsx",
   "engines": {
     "node": ">=10"
   },
